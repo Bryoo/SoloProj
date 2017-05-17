@@ -1,4 +1,5 @@
 class Person(object):
+
     pass
 
 class Fellow(Person):
