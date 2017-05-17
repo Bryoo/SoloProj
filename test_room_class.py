@@ -98,19 +98,19 @@ class TestRoomClass(unittest.TestCase):
         self.created_fellow = Fellow("Miriam")
         self.created_staff = Staff("Rosemary")
 
-        office_dict = {'black': ['peter']}
-        living_dict = {'blue_room': ['henry']}
+        self.test_dojo.offices = {'black': ['peter']}
+        self.test_dojo.livings = {'blue_room': ['henry']}
 
         # test addition of fellow who needs a room
         self.test_dojo.assign_room(self.created_fellow, self.need_room)
         self.assertDictEqual(
             {'black': ['bryant', 'Miriam']},
-            office_dict,
+            self.test_dojo.offices,
             msg='assign room should add fellow1(bryant) to black office'
         )
         self.assertDictEqual(
             {'blue_room': ['henry', 'Miriam']},
-            living_dict,
+            self.test_dojo.livings,
             msg='assign room should add fellow1(Miriam) to blue living space'
         )
 
@@ -119,12 +119,12 @@ class TestRoomClass(unittest.TestCase):
         self.test_dojo.assign_room(self.created_staff, need_room)
         self.assertDictEqual(
             {'black': ['bryant', 'Miriam', 'Rosemary']},
-            office_dict,
+            self.test_dojo.offices,
             msg='assign room should add Rosemary staff to black office'
         )
         self.assertDictEqual(
             {'blue_room': ['henry', 'Miriam']},
-            living_dict,
+            self.test_dojo.livings,
             msg='addition of staff should not alter the living space dictionary'
         )
 
