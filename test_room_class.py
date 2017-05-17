@@ -13,15 +13,12 @@ class TestRoomClass(unittest.TestCase):
 
         self.room1 = Room()
         self.office1 = Office("blue_office")
-
+        #
         """ creating multiple offices"""
         self.test_dojo.create_room(self.is_office, ['Spires', 'Black', 'Yellow'])
 
-        """ creating an office"""
-        self.test_dojo.create_room(self.is_office, ['Blue'])
-
-        """ Add a person"""
-        self.test_dojo.create_person("bryant", "neymar", self.is_fellow)
+        """ creating multiple living spaces"""
+        self.test_dojo.create_room(not self.is_office, ['living_spires', 'living_Black', 'living_Yellow'])
 
     def test_if_created(self):
         """ test if creation of rooms is successful"""
@@ -29,25 +26,46 @@ class TestRoomClass(unittest.TestCase):
         self.assertIsInstance(self.office1, Office)
 
         """check whether room number increases"""
-    def test_create_room(self):
+    def test_creation_of_offices(self):
         """ test multiple room creation"""
         initial_dojo = Dojo()
-        initial_office_len = len(initial_dojo.offices)
-        initial_living_len = len(initial_dojo.livings)
 
-        self.test_dojo.create_room(self.is_office, ['Blue', 'Black', 'Yellow']) # create offices
+        initial_office_len = len(self.test_dojo.offices)
+        initial_living_len = len(self.test_dojo.livings)
 
-        self.assertEqual(3, len(self.test_dojo.offices) - initial_office_len,
+        #assign initial rooms to initial dojo object
+        initial_dojo.offices = self.test_dojo.offices
+
+        # creation of multiple offices
+        self.test_dojo.create_room(self.is_office, ['Blue', 'DayKio', 'Plaza'])
+
+        self.assertEqual(3, (len(self.test_dojo.offices) - initial_office_len),
                          msg="Creating three rooms need to increment counter by 3"
                          )
         # test whether the rooms created exist in dictionary
 
         self.assertTrue(bool(set(initial_dojo.offices.keys())&set(self.test_dojo.offices.keys())),
-                        msg="'Blue', 'Black', 'Yellow' created should be in room_names list" )
+                        msg="'Blue', 'DayKio', 'Plaza' created should be in room dict" )
 
-        # test increase in offices count on creation of offices
-        self.assertEqual(1, len(self.test_dojo.offices)- initial_office_len)
-        self.assertEqual(0, len(self.test_dojo.livings)- initial_living_len)
+
+    def test_creation_of_livings(self):
+
+        initial_dojo = Dojo()
+        initial_living_len = len(self.test_dojo.livings)
+
+        #assign initial rooms to initial dojo object
+        initial_dojo.livings = self.test_dojo.livings
+
+        # creation of multiple offices
+        self.test_dojo.create_room(not self.is_office, ['living_Blue', 'living_DayKio', 'living_Plaza'])
+
+        self.assertEqual(3, (len(self.test_dojo.livings) - initial_living_len),
+                         msg="Creating three living spaces need to increment living dict by 3"
+                         )
+        # test whether the rooms created exist in dictionary
+
+        self.assertTrue(bool(set(initial_dojo.livings.keys())&set(self.test_dojo.livings.keys())),
+                        msg="'living_Blue', 'living_DayKio', 'living_Plaza' created should be in room dict" )
 
     def test_duplicate_error(self):
         """ test for duplicate rooms. raise NameError on duplicate"""
@@ -72,9 +90,9 @@ class TestRoomClass(unittest.TestCase):
     def test_check_vacant(self):
         """ check whether a dictionary of only the non full rooms (less than 6) is returned"""
         self.test_dojo.offices = {'black': ['peter', 'mushagi', 'kiseu', 'bryan', 'testla', 'rose'],
-                             'blue': ['vandam', 'andrew', 'ritho'],
-                             'white': ['stella', 'shiku', 'hellen']
-                             }
+                                  'blue': ['vandam', 'andrew', 'ritho'],
+                                  'white': ['stella', 'shiku', 'hellen']
+                                 }
         self.test_dojo.livings = {'white_living': ['mary', 'john', 'cosmos', 'ruth'],
                                   'blue_living': ['Ernest', 'Peter', 'Waititu', 'Mwambela'],
                                   'black_living': ['Louise', 'Bethany', 'Annabelle', 'Neymar']
