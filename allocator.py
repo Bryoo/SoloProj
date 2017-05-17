@@ -88,5 +88,5 @@ class Dojo(object):
 
 
     # create_room office blue_office black_office
-    # create_room living blue_livingce black_living
+    # create_room living blue_living black_living
     # create_person bryoo muthama fellow yes

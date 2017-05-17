@@ -13,7 +13,6 @@ Options:
     -i, --interactive  Interactive Mode
     -h, --help  Show this screen and exit.
 """
-
 import sys
 import cmd
 from allocator import Dojo
@@ -111,4 +110,3 @@ if opt['create_room']:
     print(opt['<room_name>'])
 
 print(opt)
-
