@@ -52,7 +52,7 @@ class TestRoomClass(unittest.TestCase):
         initial_dojo = Dojo()
         initial_living_len = len(self.test_dojo.livings)
 
-        #assign initial rooms to initial dojo object
+        # assign initial rooms to initial dojo object
         initial_dojo.livings = self.test_dojo.livings
 
         # creation of multiple offices
