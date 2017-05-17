@@ -86,7 +86,6 @@ class Dojo(object):
 
         return semi_full_dict
 
-
     # create_room office blue_office black_office
     # create_room living blue_living black_living
     # create_person bryoo muthama fellow yes

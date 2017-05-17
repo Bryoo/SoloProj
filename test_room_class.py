@@ -45,8 +45,7 @@ class TestRoomClass(unittest.TestCase):
         # test whether the rooms created exist in dictionary
 
         self.assertTrue(bool(set(initial_dojo.offices.keys())&set(self.test_dojo.offices.keys())),
-                        msg="'Blue', 'DayKio', 'Plaza' created should be in room dict" )
-
+                        msg="'Blue', 'DayKio', 'Plaza' created should be in room dict")
 
     def test_creation_of_livings(self):
 

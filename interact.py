@@ -3,9 +3,9 @@ This example uses docopt with the built in cmd module to demonstrate an
 interactive command application.
 
 Usage:
-    interact create_room (off
-    ice | living) <room_name>...
+    interact create_room (office | living) <room_name>...
     interact create_person <fname> <lname> (fellow [[yes|y][y|n]] | staff)
+    interact print_room <room_name>
     interact (-i | --interactive)
     interact (-h | --help | --version)
 
@@ -24,7 +24,6 @@ def docopt_cmd(func):
     This decorator is used to simplify the try/except block and pass the result
     of the docopt parsing to the called action.
     """
-
     def fn(self, arg):
 
 
@@ -79,9 +78,8 @@ class MyInteractive(cmd.Cmd):
 
     @docopt_cmd
     def do_create_person(self, arg):
-        """Usage: create_person <fname> <lname> (fellow [[yes|y][n|no]] | staff)
-
-        """
+        """Usage:  create_person <fname> <lname> (fellow [[yes|y][n|no]] | staff)"""
+        print(arg)
         if arg['yes'] | arg['y']:
             need_room = "yes"
         else:
@@ -93,6 +91,10 @@ class MyInteractive(cmd.Cmd):
             is_fellow = False
 
         dojo.create_person(arg['<fname>'], arg['<lname>'], is_fellow, need_room)
+
+    @docopt_cmd
+    def do_print_unnalocated(self, arg):
+        """Usage:  """
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
