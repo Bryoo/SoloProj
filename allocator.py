@@ -2,6 +2,7 @@ from people import Fellow, Staff
 from room import Office, LivingSpace
 import random
 
+
 class Dojo(object):
     def __init__(self):
         self.room_name = []
@@ -67,7 +68,6 @@ class Dojo(object):
             create_staff = Staff(names)
             self.staff_list.append(create_staff)
             self.assign_room(create_staff, need_room)
-
 
     def assign_room(self, person, need_room):
         # check for vacant rooms by looping either the office or living spaces

@@ -3,6 +3,7 @@ from room import Room, Office
 from people import Person, Fellow, Staff
 from allocator import Dojo
 
+
 class TestRoomClass(unittest.TestCase):
     def setUp(self):
         self.test_dojo = Dojo()
