@@ -8,7 +8,7 @@ class TestRoomClass(unittest.TestCase):
         self.test_dojo = Dojo()
         self.fellow1 = Fellow("bryan")
         self.is_office = True
-        self.need_room = False
+        self.need_room = True
         self.is_fellow = True
 
         self.room1 = Room()
@@ -98,15 +98,17 @@ class TestRoomClass(unittest.TestCase):
         self.created_fellow = Fellow("Miriam")
         self.created_staff = Staff("Rosemary")
 
-        self.test_dojo.offices = {'black': ['peter']}
-        self.test_dojo.livings = {'blue_room': ['henry']}
+        self.test_dojo.offices.clear()
+        self.test_dojo.livings.clear()
+        self.test_dojo.offices.update({'black': ['bryant']})
+        self.test_dojo.livings.update({'blue_room': ['henry']})
 
         # test addition of fellow who needs a room
         self.test_dojo.assign_room(self.created_fellow, self.need_room)
         self.assertDictEqual(
             {'black': ['bryant', 'Miriam']},
             self.test_dojo.offices,
-            msg='assign room should add fellow1(bryant) to black office'
+            msg='assign room should add Mirriam to black office'
         )
         self.assertDictEqual(
             {'blue_room': ['henry', 'Miriam']},
