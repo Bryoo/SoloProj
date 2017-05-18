@@ -2,6 +2,7 @@ import unittest
 from room import Room, Office
 from people import Person, Fellow, Staff
 from allocator import Dojo
+import os
 
 
 class TestRoomClass(unittest.TestCase):
@@ -166,7 +167,7 @@ class TestRoomClass(unittest.TestCase):
                                        })
 
         self.assertEqual([ ['non_existing'], ['black_office', 'dark_office']],
-                         self.test_dojo.print_room(self.is_office, ["black_office", "non_existing", "dark_office"]))
+                            self.test_dojo.print_room(self.is_office, ["black_office", "non_existing", "dark_office"]))
 
         # test printing of existing and non existing living spaces
         self.test_dojo.livings.clear()
@@ -177,7 +178,22 @@ class TestRoomClass(unittest.TestCase):
         self.assertEqual([['absent_living'], ['black_living']], self.test_dojo.print_room(not self.is_office, ["black_living", "absent_living"]))
 
     def test_print_unallocated(self):
-        pass
+        """ test data printed on the file"""
+        self.test_dojo.fellow_unallocated = [Fellow("bryant awesome"), Fellow("martin king"), Fellow("peter kariuki")]
+
+        # check the existence of the file
+        filename = 'data.txt'
+        self.test_dojo.print_unallocated(filename)
+        self.assertTrue(os.path.exists(filename))
+
+        # check whether the functions outputs the unallocated fellows to data.txt
+        with open(filename) as myfile:
+            lines = myfile.readlines()
+            # line three holds the unallocated fellows
+            print("Lines is this mate", lines[2])
+            # check if that line matches the people in defined dictionary above
+            self.assertTrue("bryant awesome\t\tmartin king\t\tpeter kariuki" in lines[2])
+        os.remove(filename)
 
 
 if __name__ == '__main__':
