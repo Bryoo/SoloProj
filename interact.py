@@ -6,7 +6,8 @@ Usage:
     interact create_room (office | living) <room_name>...
     interact create_person <fname> <lname> (fellow [[yes|y][y|n]] | staff)
     interact print_room (office | living) <room_name>...
-    interact print_unallocated [--o=filemane]
+    interact print_unallocated [--o=filename]
+    interact print_allocations [--o=filename]
     interact (-i | --interactive)
     interact (-h | --help | --version)
 
@@ -101,14 +102,15 @@ class MyInteractive(cmd.Cmd):
             is_office = False
 
         result = dojo.print_room(is_office, rooms)
-        null  = result[0]
+        null = result[0]
         existing = result[1]
 
-        print("Existing ", existing)
-        print("Null ", null)
-
-        for room in existing:
-            print(room, ":=>", dojo.offices[room])
+        if result[2]:
+            for room in existing:
+                print(room, ":=>", dojo.offices[room])
+        else:
+            for room in existing:
+                print(room, ":=>", dojo.livings[room])
 
         if null:
             for room in null:
@@ -116,9 +118,15 @@ class MyInteractive(cmd.Cmd):
 
     @docopt_cmd
     def do_print_unallocated(self, arg):
-        """Usage: print_unallocated [--o=filemane]"""
+        """Usage: print_unallocated [--o=filename]"""
         filename = arg['--o']
         dojo.print_unallocated(filename)
+
+    @docopt_cmd
+    def do_print_allocations(self, arg):
+        """Usage: print_allocations [--o=filename]"""
+        filename = arg['--o']
+        dojo.print_allocations(filename)
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
