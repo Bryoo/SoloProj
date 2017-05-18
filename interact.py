@@ -20,14 +20,13 @@ import cmd
 from allocator import Dojo
 from docopt import docopt, DocoptExit
 
-
 def docopt_cmd(func):
     """
     This decorator is used to simplify the try/except block and pass the result
     of the docopt parsing to the called action.
     """
-    def fn(self, arg):
 
+    def fn(self, arg):
 
         try:
             opt = docopt(fn.__doc__, arg)
@@ -47,16 +46,17 @@ def docopt_cmd(func):
             return
 
         return func(self, opt)
+
     fn.__name__ = func.__name__
     fn.__doc__ = func.__doc__
     fn.__dict__.update(func.__dict__)
     return fn
 
+
 dojo = Dojo()
 
 
 class MyInteractive(cmd.Cmd):
-
     # def __init__(self):
     #     self.
     intro = 'Welcome to my interactive program!' \
@@ -71,7 +71,6 @@ class MyInteractive(cmd.Cmd):
         is_office = args['office']
 
         dojo.create_room(is_office, room_name)
-
 
     @docopt_cmd
     def do_create_person(self, arg):
@@ -131,11 +130,11 @@ class MyInteractive(cmd.Cmd):
         print('Good Bye!')
         exit()
 
+
 opt = docopt(__doc__, sys.argv[1:])
 
 if opt['--interactive']:
     MyInteractive().cmdloop()
-
 
 if opt['create_room']:
     print(opt['<room_name>'])

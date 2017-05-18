@@ -78,7 +78,7 @@ class Dojo(object):
             empty_office_dict = self.check_vacant_room(self.offices, 6)
             random_offices = random.choice(list(empty_office_dict))
             self.offices[random_offices].append(person.name)
-            print(person.name, " has been assigned to ", random_offices)
+            print(person.name, " has been assigned to office", random_offices)
 
         except BaseException as error:
             if isinstance(person, Fellow):
@@ -96,7 +96,7 @@ class Dojo(object):
 
                 # append created person to dictionary
                 self.livings[random_living].append(person.name)
-                print(person.name, " has been assigned to ", random_living)
+                print(person.name, " has been assigned to living space", random_living)
 
             except BaseException as error:
                 if error.__class__.__name__ == "IndexError":
