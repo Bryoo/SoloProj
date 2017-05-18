@@ -166,8 +166,8 @@ class TestRoomClass(unittest.TestCase):
                                        'dark_office': ['danielle stark']
                                        })
 
-        self.assertEqual([ ['non_existing'], ['black_office', 'dark_office']],
-                            self.test_dojo.print_room(self.is_office, ["black_office", "non_existing", "dark_office"]))
+        self.assertEqual([['non_existing'], ['black_office', 'dark_office'], self.is_office],
+                         self.test_dojo.print_room(self.is_office, ["black_office", "non_existing", "dark_office"]))
 
         # test printing of existing and non existing living spaces
         self.test_dojo.livings.clear()
@@ -175,7 +175,7 @@ class TestRoomClass(unittest.TestCase):
                                        'blue_living': ['ruth mwangi', 'destiny maina']
 
                                        })
-        self.assertEqual([['absent_living'], ['black_living']], self.test_dojo.print_room(not self.is_office, ["black_living", "absent_living"]))
+        self.assertEqual([['absent_living'], ['black_living'], not self.is_office], self.test_dojo.print_room(not self.is_office, ["black_living", "absent_living"]))
 
     def test_print_unallocated(self):
         """ test data printed on the file"""
@@ -194,6 +194,19 @@ class TestRoomClass(unittest.TestCase):
             # check if that line matches the people in defined dictionary above
             self.assertTrue("bryant awesome\t\tmartin king\t\tpeter kariuki" in lines[2])
         os.remove(filename)
+
+    def test_print_allocations(self):
+        filename = 'allocation.txt'
+        """ test the output of the allocated offices"""
+        self.test_dojo.offices = {'black': ['peter', 'mushagi', 'kiseu', 'bryan', 'testla', 'rose'],
+                                  'blue': ['vandam', 'andrew', 'ritho'],
+                                  'white': ['stella', 'shiku', 'hellen']
+                                  }
+        self.test_dojo.livings = {'black_living': ['bryant marangi', 'Meshack Nyambura', 'Lilian muli'],
+                                  'blue_living': [],
+                                  'dark_living': ['danielle stark']
+                                 }
+        self.test_dojo.print_allocations(filename)
 
 
 if __name__ == '__main__':

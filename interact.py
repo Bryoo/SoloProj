@@ -47,8 +47,6 @@ def docopt_cmd(func):
             return
 
         return func(self, opt)
-
-
     fn.__name__ = func.__name__
     fn.__doc__ = func.__doc__
     fn.__dict__.update(func.__dict__)
@@ -69,7 +67,6 @@ class MyInteractive(cmd.Cmd):
     @docopt_cmd
     def do_create_room(self, args):
         """Usage:  create_room (office | living) <room_name>..."""
-
         room_name = args['<room_name>']
         is_office = args['office']
 
