@@ -5,7 +5,7 @@ interactive command application.
 Usage:
     interact create_room (office | living) <room_name>...
     interact create_person <fname> <lname> (fellow [[yes|y][y|n]] | staff)
-    interact print_room <room_name>
+    interact print_room (office | living) <room_name>...
     interact (-i | --interactive)
     interact (-h | --help | --version)
 
@@ -52,8 +52,6 @@ def docopt_cmd(func):
     fn.__dict__.update(func.__dict__)
     return fn
 
-my_list = []
-
 dojo = Dojo()
 
 
@@ -93,8 +91,28 @@ class MyInteractive(cmd.Cmd):
         dojo.create_person(arg['<fname>'], arg['<lname>'], is_fellow, need_room)
 
     @docopt_cmd
-    def do_print_unnalocated(self, arg):
-        """Usage:  """
+    def do_print_room(self, arg):
+        """Usage: print_room (office | living) <room_name>... """
+
+        rooms = arg['<room_name>']
+        if arg['office']:
+            is_office = True
+        else:
+            is_office = False
+
+        result = dojo.print_room(is_office, rooms)
+        null  = result[0]
+        existing = result[1]
+
+        print("Existing ", existing)
+        print("Null ", null)
+
+        for room in existing:
+            print(room, ":=>", dojo.offices[room])
+
+        if null:
+            for room in null:
+                print("Room", room, "doesn't exist")
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
