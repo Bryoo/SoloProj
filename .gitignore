@@ -1,0 +1,7 @@
+soloproj/*
+.cache/
+__pycache__/
+allocator.pyc
+people.pyc
+room.pyc
+test_room_class.pyc
