@@ -200,29 +200,3 @@ class Dojo(object):
                 data.write('=>')
                 data.write(', '.join(str(elem) for elem in self.livings[living]))
             data.close()
-
-            # create_room office blue_office black_office
-            # create_room living blue_living black_living
-            # create_person bryoo muthama fellow yes
-            # create_person james mitu fellow yes
-            # create_person peter marangi staff
-            # print_room office blue_office
-            # print_room office blue_office black_office yellow_office
-            # print_room living blue_living black_living
-            # print_room living blue_living black_living yellow_living
-            # print_allocations
-            # print_allocations --o=file.txt
-            # print_unallocated --o=data.txt
-"""
-office and living space names
-has been assigned to 'living space' black_office
-
-
-assigning a fellow without accomodation
-
-error message for staff acomodation
-
-print  offices and living spaces with same name
-
-show types on allocations
-"""
