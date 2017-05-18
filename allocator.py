@@ -55,20 +55,20 @@ class Dojo(object):
     def create_person(self, fname, lname, is_fellow, need_room='No'):
         names = fname.lower() + " " + lname.lower()
         if is_fellow:
-            create_fellow = Fellow(names)
-            self.fellow_list.append(create_fellow)
+            created_fellow = Fellow(names)
+            self.fellow_list.append(created_fellow)
 
             if need_room == 'No':
                 need_room = False
-                self.assign_room(create_fellow, need_room)
+                self.assign_room(created_fellow, need_room)
             else:
                 need_room = True
-                self.assign_room(create_fellow, need_room)
+                self.assign_room(created_fellow, need_room)
 
         else:
-            create_staff = Staff(names)
-            self.staff_list.append(create_staff)
-            self.assign_room(create_staff, need_room)
+            created_staff = Staff(names)
+            self.staff_list.append(created_staff)
+            self.assign_room(created_staff, need_room)
 
     def assign_room(self, person, need_room):
         """ check for vacant rooms by looping either the office or living spaces"""
