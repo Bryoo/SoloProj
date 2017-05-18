@@ -6,6 +6,7 @@ Usage:
     interact create_room (office | living) <room_name>...
     interact create_person <fname> <lname> (fellow [[yes|y][y|n]] | staff)
     interact print_room (office | living) <room_name>...
+    interact print_unallocated [--o=filemane]
     interact (-i | --interactive)
     interact (-h | --help | --version)
 
@@ -77,7 +78,6 @@ class MyInteractive(cmd.Cmd):
     @docopt_cmd
     def do_create_person(self, arg):
         """Usage:  create_person <fname> <lname> (fellow [[yes|y][n|no]] | staff)"""
-        print(arg)
         if arg['yes'] | arg['y']:
             need_room = "yes"
         else:
@@ -113,6 +113,12 @@ class MyInteractive(cmd.Cmd):
         if null:
             for room in null:
                 print("Room", room, "doesn't exist")
+
+    @docopt_cmd
+    def do_print_unallocated(self, arg):
+        """Usage: print_unallocated [--o=filemane]"""
+        filename = arg['--o']
+        dojo.print_unallocated(filename)
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
