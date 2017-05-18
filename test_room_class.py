@@ -76,14 +76,14 @@ class TestRoomClass(unittest.TestCase):
         self.assertTrue(bool(set(initial_dojo.livings.keys())&set(self.test_dojo.livings.keys())),
                         msg="'living_Blue', 'living_DayKio', 'living_Plaza' created should be in room dict" )
 
-    # def test_duplicate_error(self):
-    #     """ test for duplicate rooms. raise NameError on duplicate"""
-    #     with self.assertRaises(NameError):
-    #         self.test_dojo.create_room(self.is_office, ['Blue'])
-    #
-    #     # test for duplicate rooms regardless of how the room name was written. raise NameError on duplicate
-    #     with self.assertRaises(NameError):
-    #         self.test_dojo.create_room(self.is_office, ['BluE'])
+    def test_duplicate_error(self):
+        """ test for duplicate rooms. raise NameError on duplicate"""
+        with self.assertRaises(NameError):
+            self.test_dojo.create_room(self.is_office, ['Blue'])
+
+        # test for duplicate rooms regardless of how the room name was written. raise NameError on duplicate
+        with self.assertRaises(NameError):
+            self.test_dojo.create_room(self.is_office, ['BluE'])
 
     def test_create_person(self):
         """ test creation of person and increment of person number"""
