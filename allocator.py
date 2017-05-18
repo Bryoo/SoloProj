@@ -17,7 +17,6 @@ class Dojo(object):
         rooms = [item.lower() for item in room_names]
         # check if its staff or fellow and create person by calling staff and fellow objects
 
-
         if is_office:
             office_duplicates = [rm for rm in rooms if rm in list(self.offices.keys())]
             non_duplicates = [rm for rm in rooms if rm not in list(self.offices.keys())]
@@ -68,6 +67,7 @@ class Dojo(object):
         else:
             created_staff = Staff(names)
             self.staff_list.append(created_staff)
+            need_room = False
             self.assign_room(created_staff, need_room)
 
     def assign_room(self, person, need_room):
@@ -86,6 +86,7 @@ class Dojo(object):
                 print("Fellow", person.name, "added but there are no rooms to allocate ")
             else:
                 self.staff_unallocated.append(person)
+                print("Staff", person.name, "added but there are no offices to allocate ")
 
         # Assigning living room
         if need_room:
@@ -138,9 +139,49 @@ class Dojo(object):
             all_livings = [null_living, existing_living]
             return all_livings
 
-    def print_unallocated(self ):
-        pass
+    def print_unallocated(self, filename):
+        if not filename:
+            print("Unallocated Fellows")
+            print('-'*50)
+            if self.fellow_unallocated:
+                for room in self.fellow_unallocated:
+                    print(room.name)
+            else:
+                print("All fellows are allocated to rooms")
+
+            print("\nUnallocated Staff")
+            print('-'*50)
+            if self.staff_unallocated:
+                for room in self.staff_unallocated:
+                    print(room.name)
+            else:
+                print("All Staff are allocated to rooms")
+
+        else:
+            data = open(filename, "w")
+            data.write("Unallocated Fellows\n")
+            data.write('-'*50)
+            data.write("\n")
+            if self.fellow_unallocated:
+                for room in self.fellow_unallocated:
+                    data.write(room.name)
+                    data.write("\t\t")
+                data.write("\n")
+            else:
+                data.write("All fellows are allocated to rooms\n")
+
+            if self.staff_unallocated:
+                for room in self.staff_unallocated:
+                    data.write(room.name)
+            else:
+                data.write("All fellows are allocated to rooms\n")
+
+            data.close()
+
+
     # create_room office blue_office black_office
     # create_room living blue_living black_living
     # create_person bryoo muthama fellow yes
+    # create_person james mitu fellow yes
+    # create_person james mitu staff
     # print_room office blue_office black_office
