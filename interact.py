@@ -4,8 +4,8 @@ interactive command application.
 
 Usage:
     interact create_room (office | living) <room_name>...
-    interact add_person <fname> <lname> (fellow [[yes|y][y|n]] | staff)
-    interact print_room (office | living) <room_name>...
+    interact add_person <fname> <lname> (fellow [[yes|y][no|n]] | staff)
+    interact print_room <room_name>...
     interact print_unallocated [--o=filename]
     interact print_allocations [--o=filename]
     interact (-i | --interactive)
@@ -89,26 +89,29 @@ class MyInteractive(cmd.Cmd):
 
     @docopt_cmd
     def do_print_room(self, arg):
-        """Usage: print_room (office | living) <room_name>... """
+        """Usage: print_room <room_name>... """
 
         rooms = arg['<room_name>']
-        if arg['office']:
-            is_office = True
-        else:
-            is_office = False
+        result = dojo.print_room(rooms)
 
-        result = dojo.print_room(is_office, rooms)
-        null = result[0]
-        existing = result[1]
+        offices = result[0]
+        livings = result[1]
+        null = result[2]
 
-        if result[2]:
-            for room in existing:
-                print(room, ":=>", dojo.offices[room])
-        else:
-            for room in existing:
-                print(room, ":=>", dojo.livings[room])
+        if offices:
+            print("Offices: ")
+            for room in offices:
+                print(room, ":=>", ', '.join(dojo.offices[room]))
+                print(" ")
+
+        if livings:
+            print("Living Spaces: ")
+            for room in livings:
+                print(room, ":=>", ', '.join(dojo.livings[room]))
+                print(" ")
 
         if null:
+            print("Non Existent Rooms: ")
             for room in null:
                 print("Room", room, "doesn't exist")
 

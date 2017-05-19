@@ -21,17 +21,19 @@ class Dojo(object):
             office_duplicates = [rm for rm in rooms if rm in list(self.offices.keys())]
             non_duplicates = [rm for rm in rooms if rm not in list(self.offices.keys())]
 
-            if non_duplicates:  # if there are no duplicates
+            if non_duplicates:  # if there are no office duplicates
 
                 for room in non_duplicates:
                     create_office = Office(room)
                     self.offices[create_office.name] = []
                     print("Office", room, "has been created")
 
+                print(" ")
+                # if there are some office duplicates
                 if office_duplicates:
                     for room in office_duplicates:
                         print("Room", room, "already exists \n")
-
+            # if there are no unique entries
             else:
                 print("All entries exist hence no room created\n")
 
@@ -44,21 +46,21 @@ class Dojo(object):
                     create_living = LivingSpace(room)
                     self.livings[create_living.name] = []
                     print("Living space", room, "has been created")
-
+                print(" ")
 
                 if living_duplicates:
                     for room in living_duplicates:
                         print("Living room", room, "already exists \n")
             else:
-                print("All living spaces imputted exist hence no room created\n")
+                print("All living spaces inputted exist hence no room created\n")
 
-    def create_person(self, fname, lname, is_fellow, need_room='No'):
+    def create_person(self, fname, lname, is_fellow, need_room='no'):
         names = fname.lower() + " " + lname.lower()
         if is_fellow:
             created_fellow = Fellow(names)
             self.fellow_list.append(created_fellow)
 
-            if need_room == 'No':
+            if need_room == 'no':
                 need_room = False
                 self.assign_room(created_fellow, need_room)
             else:
@@ -77,17 +79,18 @@ class Dojo(object):
         try:
             # check if there are vacant rooms in dictionary
             empty_office_dict = self.check_vacant_room(self.offices, 6)
-            random_offices = random.choice(list(empty_office_dict))
-            self.offices[random_offices].append(person.name)
-            print(person.name, " has been assigned to office", random_offices)
+            random_office = random.choice(list(empty_office_dict))
+            self.offices[random_office].append(person.name)
+            print(person.name, "has been assigned to office", random_office)
+
 
         except BaseException as error:
             if isinstance(person, Fellow):
                 self.fellow_unallocated.append(person)
-                print("Fellow", person.name, "added but there are no rooms to allocate ")
+                print("Fellow", person.name, "added but there are no rooms to allocate\n")
             else:
                 self.staff_unallocated.append(person)
-                print("Staff", person.name, "added but there are no offices to allocate ")
+                print("Staff", person.name, "added but there are no offices to allocate\n")
 
         # Assigning living room
         if need_room:
@@ -97,15 +100,16 @@ class Dojo(object):
 
                 # append created person to dictionary
                 self.livings[random_living].append(person.name)
-                print(person.name, " has been assigned to living space", random_living)
 
+                print(person.name, " has been assigned to living space", random_living)
+                print(" ")
             except BaseException as error:
                 if error.__class__.__name__ == "IndexError":
-                    print("Person added but not allocated to a living space")  # (if staff dont print)
+                    pass
                 else:
                     print(error.__class__.__class__, ": ", error)
-
-                    # to create a new room and assign the person to that room
+        else:
+            print(" ")
 
     def check_vacant_room(self, existing_dict, max):
         """if type is office, use office dict else listing to get spaces dict
@@ -120,41 +124,38 @@ class Dojo(object):
 
         return semi_full_dict
 
-    def print_room(self, is_office, rooms):
+    def print_room(self, rooms):
         """ Prints out rooms and occupants"""
-        if is_office:
-            # get offices that are not in existing office dict
-            null_offices = [rm for rm in rooms if rm not in list(self.offices.keys())]
-            # get offices that are in existing office dict
-            existing_offices = [rm for rm in rooms if rm in list(self.offices.keys())]
-            is_office = True
-            all_offices = [null_offices, existing_offices, is_office]
-            return all_offices
+        existing_offices = [rm for rm in rooms if rm in list(self.offices.keys())]
 
-        else:
-            # get offices that are not in existing living dict
-            null_living = [rm for rm in rooms if rm not in list(self.livings.keys())]
-            # get offices that are in existing living dict
-            existing_living = [rm for rm in rooms if rm in list(self.livings.keys())]
-            is_office = False
-            all_livings = [null_living, existing_living, is_office]
-            return all_livings
+        existing_living = [rm for rm in rooms if rm in list(self.livings.keys())]
+
+        # get non existent rooms
+        null_rooms = []
+        for room in rooms:
+            if room not in list(self.offices.keys()):
+                if room not in list(self.livings.keys()):
+                    null_rooms.append(room)
+
+        all_rooms = [existing_offices, existing_living, null_rooms]
+        return all_rooms
 
     def print_unallocated(self, filename):
         if not filename:
             print("Unallocated Fellows")
-            print('-' * 50)
+            print('-' * 40)
+            # prints unallocated fellows
             if self.fellow_unallocated:
-                for room in self.fellow_unallocated:
-                    print(room.name)
+                for fellow in self.fellow_unallocated:
+                    print(fellow.name)
             else:
                 print("All fellows are allocated to rooms")
 
             print("\nUnallocated Staff")
-            print('-' * 50)
+            print('-' * 40)
             if self.staff_unallocated:
-                for room in self.staff_unallocated:
-                    print(room.name)
+                for staff in self.staff_unallocated:
+                    print(staff.name)
             else:
                 print("All Staff are allocated to rooms")
 
@@ -171,33 +172,49 @@ class Dojo(object):
             else:
                 data.write("All fellows are allocated to rooms\n")
 
+            data.write("Unallocated Staff")
+            data.write('-' * 40)
             if self.staff_unallocated:
                 for room in self.staff_unallocated:
                     data.write(room.name)
             else:
-                data.write("All fellows are allocated to rooms\n")
+                data.write("All Staff are allocated to rooms\n")
 
             data.close()
 
     def print_allocations(self, myfile):
         """ loops through dictionary and prints out parameters to screen or inputted file"""
         if not myfile:
-            for office in self.offices:
-                print(office, '=>', ', '.join(self.offices[office]))
 
-            for living in self.livings:
-                print(living, '=>', ', '.join(self.livings[living]))
+            if any(self.offices):
+                print("Offices")
+                for office in self.offices:
+                    print(office, '=>', ', '.join(self.offices[office]))
+                print(" ")
+            else:
+                print("No offices currently exist")
+            if any(self.livings):
+                print("Living Spaces")
+                for living in self.livings:
+                    print(living, '=>', ', '.join(self.livings[living]))
+                print(" ")
+            else:
+                print("No living spaces currently exist")
 
         else:
             data = open(myfile, "w")
+            data.write("Offices\n")
             for office in self.offices:
+
                 data.write(office)
                 data.write('=>')
                 data.write(', '.join(str(elem) for elem in self.offices[office]))
                 data.write('\n')
 
+            data.write("Living Spaces\n")
             for living in self.livings:
                 data.write(living)
                 data.write('=>')
                 data.write(', '.join(str(elem) for elem in self.livings[living]))
+                data.write('\n')
             data.close()
