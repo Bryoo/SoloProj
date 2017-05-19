@@ -1,7 +1,6 @@
 # Dojo Room Allocation
 
 ## Problem Description
-**For your homework, you will be creating a readme document to introduce yourself to the class and experiment with the range of Markdown features.**
 
 When a new Fellow joins Andela they are assigned an office space and an optional living space
 if they choose to opt in. When a new Staff joins they are assigned an office space only.
