@@ -1,13 +1,5 @@
 # Dojo Room Allocation
 
-## Status
-
-|    **Item**    | **Status** |
-|----------------|------------|
-| Finished-ness  | :thumbsup: |
-| Happiness      | :bowtie:   |
-| Markdowny-ness | :octocat:  |
-
 ## Problem Description
 **For your homework, you will be creating a readme document to introduce yourself to the class and experiment with the range of Markdown features.**
 
