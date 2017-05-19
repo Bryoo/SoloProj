@@ -4,7 +4,7 @@ interactive command application.
 
 Usage:
     interact create_room (office | living) <room_name>...
-    interact create_person <fname> <lname> (fellow [[yes|y][y|n]] | staff)
+    interact add_person <fname> <lname> (fellow [[yes|y][y|n]] | staff)
     interact print_room (office | living) <room_name>...
     interact print_unallocated [--o=filename]
     interact print_allocations [--o=filename]
@@ -73,8 +73,8 @@ class MyInteractive(cmd.Cmd):
         dojo.create_room(is_office, room_name)
 
     @docopt_cmd
-    def do_create_person(self, arg):
-        """Usage:  create_person <fname> <lname> (fellow [[yes|y][n|no]] | staff)"""
+    def do_add_person(self, arg):
+        """Usage:  add_person <fname> <lname> (fellow [[yes|y][n|no]] | staff)"""
         if arg['yes'] | arg['y']:
             need_room = "yes"
         else:

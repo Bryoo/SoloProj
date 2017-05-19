@@ -45,6 +45,7 @@ class Dojo(object):
                     self.livings[create_living.name] = []
                     print("Living space", room, "has been created")
 
+
                 if living_duplicates:
                     for room in living_duplicates:
                         print("Living room", room, "already exists \n")

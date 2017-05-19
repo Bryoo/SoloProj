@@ -2,3 +2,4 @@ soloproj/*
 .cache/
 __pycache__/
 *.pyc
+comments.py
