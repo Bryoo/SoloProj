@@ -32,7 +32,8 @@ class Dojo(object):
                 # if there are some office duplicates
                 if office_duplicates:
                     for room in office_duplicates:
-                        print("Room", room, "already exists \n")
+                        print("Room", room, "already exists")
+                    print(" ")
             # if there are no unique entries
             else:
                 print("All entries exist hence no room created\n")
