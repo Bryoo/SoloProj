@@ -1,6 +1,4 @@
-Offices
-blue_office=>brilliant bryce
-black_office=>thomas mwangi, james mitu
-Living Spaces
-blue_living=>
-black_living=>
+Unallocated Fellows
+--------------------------------------------------
+All fellows are allocated to rooms
+Unallocated Staff----------------------------------------All Staff are allocated to rooms

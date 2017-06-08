@@ -81,9 +81,8 @@ class Dojo(object):
             # check if there are vacant rooms in dictionary
             empty_office_dict = self.check_vacant_room(self.offices, 6)
             random_office = random.choice(list(empty_office_dict))
-            self.offices[random_office].append(person.name)
+            self.offices[random_office].append(person)
             print(person.name, "has been assigned to office", random_office)
-
 
         except BaseException as error:
             if isinstance(person, Fellow):
@@ -100,7 +99,7 @@ class Dojo(object):
                 random_living = random.choice(list(empty_living_dict))
 
                 # append created person to dictionary
-                self.livings[random_living].append(person.name)
+                self.livings[random_living].append(person)
 
                 print(person.name, " has been assigned to living space", random_living)
                 print(" ")
@@ -190,15 +189,19 @@ class Dojo(object):
             if any(self.offices):
                 print("Offices")
                 for office in self.offices:
-                    print(office, '=>', ', '.join(self.offices[office]))
-                print(" ")
+                    people_list = self.offices[office]
+                    print('office ', office)
+                    for person in people_list:
+                        print(person.name, "\t")
             else:
                 print("No offices currently exist")
             if any(self.livings):
                 print("Living Spaces")
                 for living in self.livings:
-                    print(living, '=>', ', '.join(self.livings[living]))
-                print(" ")
+                    living_people = self.livings[living]
+                    print("Living ", living)
+                    for person in living_people:
+                        print(person.name, "\t")
             else:
                 print("No living spaces currently exist")
 
@@ -219,3 +222,29 @@ class Dojo(object):
                 data.write(', '.join(str(elem) for elem in self.livings[living]))
                 data.write('\n')
             data.close()
+
+    def reallocate_person(self, fname, lname, room_name):
+        names = fname.lower() + " " + lname.lower()
+        room = room_name.lower()
+        name_exists = []
+        office_exists = []
+        living_exists = []
+        if room in list(self.offices.keys()):
+            office_exists.append(room)
+        if room in list(self.livings.keys()):
+            living_exists.append(room)
+
+        if len(office_exists + living_exists) < 1:
+            print("No room named", room_name, "was found")
+            return
+        elif len(office_exists + living_exists) == 1:
+            for key, value in self.offices:
+                for item in value:
+                    if item.name == names:
+                        name_exists.append(item)
+            for key, value in self.livings:
+                for item in value:
+                    if item.name == names:
+                        name_exists.append(item)
+            if len(name_exists) == 1:
+                pass

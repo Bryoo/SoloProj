@@ -201,6 +201,11 @@ class TestRoomClass(unittest.TestCase):
                                  }
         self.test_dojo.print_allocations(filename)
 
+    def test_reallocate_person(self):
+        """ test whether the person reallocated exists in the new office/living space"""
+
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
