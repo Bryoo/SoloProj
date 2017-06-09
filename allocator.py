@@ -235,16 +235,43 @@ class Dojo(object):
             living_exists.append(room)
 
         if len(office_exists + living_exists) < 1:
-            print("No room named", room_name, "was found")
+            print("No room named", room_name, "was not found")
             return
+
         elif len(office_exists + living_exists) == 1:
-            for key, value in self.offices:
-                for item in value:
-                    if item.name == names:
-                        name_exists.append(item)
-            for key, value in self.livings:
-                for item in value:
-                    if item.name == names:
-                        name_exists.append(item)
+            is_office = True
+            for office, persons in self.offices.items():
+                for person in persons:
+                    if person.name == names:
+                        name_exists.append([is_office, office, person])
+            for living, people in self.livings.items():
+                for person in people:
+                    if person.name == names:
+                        name_exists.append([not is_office, living, person])
+            for i in name_exists:
+                print(i[2].name)
+            print("length is ",len(name_exists))
             if len(name_exists) == 1:
-                pass
+                details = name_exists[0]
+                current_room = details[1]
+                person_found = details[2]
+
+                #add person to allocated room
+                if living_exists:
+                    living_name = living_exists[0]
+                    self.livings[living_name].append(person_found)
+                elif office_exists:
+                    office_name = office_exists[0]
+                    self.offices[office_name].append(person_found)
+
+                # remove person from current room
+
+                if details[0]:
+                    self.offices[current_room].remove(person_found)
+                else:
+                    self.livings[current_room].remove(person_found)
+
+            if len(name_exists) < 1:
+                print("Sorry, the person doesn't exist")
+            else:
+                print("Multiple names found")
