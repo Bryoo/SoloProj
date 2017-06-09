@@ -271,7 +271,45 @@ class Dojo(object):
                 else:
                     self.livings[current_room].remove(person_found)
 
-            if len(name_exists) < 1:
+            elif len(name_exists) < 1:
                 print("Sorry, the person doesn't exist")
             else:
                 print("Multiple names found")
+
+    def load_people(self, filename='people.txt'):
+        with open(filename, 'r') as f:
+            content = f.readlines()
+        for line in content:
+            data = line.split()
+            fname = data[0]
+            lname = data[1]
+            role = data[2].lower()
+
+            if role == 'fellow':
+                is_fellow = True
+                try:
+                    stay = data[3].lower()
+                    if stay in ['yes', 'y']:
+                        need_room = 'yes'
+                    else:
+                        need_room = 'no'
+                except IndexError:
+                    pass
+            elif role == 'staff':
+                is_fellow = False
+            else:
+                print("person", fname, lname, "not a staff or fellow")
+                return
+            self.create_person(fname, lname, is_fellow, need_room)
+
+    
+
+"""
+create_room office black
+create_room office blue
+create_room living bluedom
+add_person bryo kiseu fellow yes
+add_person peter marangi fellow yes
+add_person gift otieno staff
+add_person selsa patash staff
+"""

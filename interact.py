@@ -9,6 +9,7 @@ Usage:
     interact print_unallocated [--o=filename]
     interact print_allocations [--o=filename]
     interact reallocate_person <fname> <lname> <room_name>
+    interact load_people <filename>
     interact (-i | --interactive)
     interact (-h | --help | --version)
 
@@ -138,12 +139,16 @@ class MyInteractive(cmd.Cmd):
 
         dojo.reallocate_person(arg['<fname>'], arg['<lname>'], arg['<room_name>'])
 
+    @docopt_cmd
+    def do_load_people(self, arg):
+        """Usage: load_people <filename>"""
+        dojo.load_people(arg['<filename>'])
+
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
 
         print('Good Bye!')
         exit()
-
 
 opt = docopt(__doc__, sys.argv[1:])
 

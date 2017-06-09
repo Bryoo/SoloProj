@@ -203,8 +203,19 @@ class TestRoomClass(unittest.TestCase):
 
     def test_reallocate_person(self):
         """ test whether the person reallocated exists in the new office/living space"""
+        self.test_dojo.create_room(self.is_office, ['Bluedom'])
+        inital_len = len(self.test_dojo.offices['bluedom'])
+        # allocate martha to newly created office
+        self.test_dojo.reallocate_person("Martha", "Nyambura", "Bluedom")
+        self.assertEqual(1, len(self.test_dojo.offices['bluedom']) - inital_len)
 
-        pass
+    def test_load_people(self):
+        """ test whether load people adds to rooms"""
+        fellow_len = len(self.test_dojo.fellow_list)
+        staff_len = len(self.test_dojo.staff_list)
+        self.test_dojo.load_people('people.txt')
+        self.assertEqual(4, len(self.test_dojo.fellow_list) - fellow_len)
+        self.assertEqual(3, len(self.test_dojo.staff_list) - staff_len)
 
 
 if __name__ == '__main__':
