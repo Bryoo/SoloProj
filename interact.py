@@ -140,6 +140,12 @@ class MyInteractive(cmd.Cmd):
         dojo.reallocate_person(arg['<fname>'], arg['<lname>'], arg['<room_name>'])
 
     @docopt_cmd
+    def do_save_state(self, arg):
+        """Usage: save_state [--db_name=dojo.db]"""
+        dojo.save_state(arg['--db_name'])
+
+
+    @docopt_cmd
     def do_load_people(self, arg):
         """Usage: load_people <filename>"""
         dojo.load_people(arg['<filename>'])

@@ -1,7 +1,8 @@
 from people import Fellow, Staff
 from room import Office, LivingSpace
 import random
-
+import sqlite3
+import sqlite_db
 
 class Dojo(object):
     def __init__(self):
@@ -302,7 +303,11 @@ class Dojo(object):
                 return
             self.create_person(fname, lname, is_fellow, need_room)
 
-    
+    def save_state(self, database):
+        conn = sqlite3.connect(database)
+        c = conn.cursor()
+        sqlite_db.create_tables(c, conn)
+
 
 """
 create_room office black
