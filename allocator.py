@@ -6,7 +6,7 @@ import sqlite_db
 
 class Dojo(object):
     def __init__(self):
-        self.room_name = []
+        # self.room_name = []
         self.offices = {}
         self.livings = {}
         self.fellow_unallocated = []
@@ -307,6 +307,36 @@ class Dojo(object):
         conn = sqlite3.connect(database)
         c = conn.cursor()
         sqlite_db.create_tables(c, conn)
+        # loop through office and living spaces dictionaries
+
+        for office in self.offices:
+            # convert list to comma separated string
+            members = ', '.join(str(elem.name) for elem in self.offices[office])
+            # insert offices into db
+            sqlite_db.insert_offices(c, conn, office, members)
+        for living in self.livings:
+            members = ', '.join(str(elem.name) for elem in self.livings[living])
+            sqlite_db.insert_livings(c, conn, living, members)
+
+        for person in self.staff_list:
+            role = 'staff'
+            sqlite_db.insert_people(c, conn, person.id, person.name, role)
+        for person in self.fellow_list:
+            role = 'fellow'
+            sqlite_db.insert_people(c, conn, person.id, person.name, role)
+
+        for person in self.staff_unallocated:
+            role = 'staff'
+            sqlite_db.insert_unallocated(c, conn, person.id, person.name, role)
+        for person in self.fellow_unallocated:
+            role = 'fellow'
+            sqlite_db.insert_unallocated(c, conn, person.id, person.name, role)
+
+        c.close()
+        conn.close()
+
+    def load_state(self, database='dojo.db'):
+        """ loads data from database"""
 
 
 """
@@ -317,4 +347,5 @@ add_person bryo kiseu fellow yes
 add_person peter marangi fellow yes
 add_person gift otieno staff
 add_person selsa patash staff
+save_state --db_name=dojos.db
 """
