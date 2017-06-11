@@ -10,6 +10,7 @@ Usage:
     interact print_allocations [--o=filename]
     interact reallocate_person <fname> <lname> <room_name>
     interact load_people <filename>
+    interact load_state <db_name>
     interact (-i | --interactive)
     interact (-h | --help | --version)
 
@@ -149,6 +150,11 @@ class MyInteractive(cmd.Cmd):
     def do_load_people(self, arg):
         """Usage: load_people <filename>"""
         dojo.load_people(arg['<filename>'])
+
+    @docopt_cmd
+    def do_load_state(self, arg):
+        """Usage: load_state <db_name>"""
+        dojo.load_state(arg['<db_name>'])
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""

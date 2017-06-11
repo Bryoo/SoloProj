@@ -2,8 +2,9 @@ from people import Fellow, Staff
 from room import Office, LivingSpace
 import random
 import sqlite3
-import sqlite_db
-
+from sqlite_db import SaveState, LoadState
+SaveState = SaveState()
+LoadState = LoadState()
 class Dojo(object):
     def __init__(self):
         # self.room_name = []
@@ -306,46 +307,69 @@ class Dojo(object):
     def save_state(self, database):
         conn = sqlite3.connect(database)
         c = conn.cursor()
-        sqlite_db.create_tables(c, conn)
+        SaveState.create_tables(c, conn)
         # loop through office and living spaces dictionaries
 
         for office in self.offices:
             # convert list to comma separated string
             members = ', '.join(str(elem.name) for elem in self.offices[office])
             # insert offices into db
-            sqlite_db.insert_offices(c, conn, office, members)
+            SaveState.insert_offices(c, conn, office, members)
         for living in self.livings:
             members = ', '.join(str(elem.name) for elem in self.livings[living])
-            sqlite_db.insert_livings(c, conn, living, members)
+            SaveState.insert_livings(c, conn, living, members)
 
         for person in self.staff_list:
             role = 'staff'
-            sqlite_db.insert_people(c, conn, person.id, person.name, role)
+            SaveState.insert_people(c, conn, person.id, person.name, role)
         for person in self.fellow_list:
             role = 'fellow'
-            sqlite_db.insert_people(c, conn, person.id, person.name, role)
+            SaveState.insert_people(c, conn, person.id, person.name, role)
 
         for person in self.staff_unallocated:
             role = 'staff'
-            sqlite_db.insert_unallocated(c, conn, person.id, person.name, role)
+            SaveState.insert_unallocated(c, conn, person.id, person.name, role)
         for person in self.fellow_unallocated:
             role = 'fellow'
-            sqlite_db.insert_unallocated(c, conn, person.id, person.name, role)
+            SaveState.insert_unallocated(c, conn, person.id, person.name, role)
 
         c.close()
         conn.close()
 
     def load_state(self, database='dojo.db'):
         """ loads data from database"""
+        conn = sqlite3.connect(database)
+        cursor = conn.cursor()
+        results = LoadState.load_unallocated(cursor)
+        for result in results:
+            if result[2] == 'fellow':
+                fellow = Fellow(result[1])
+                fellow.id = result[0]
+                self.fellow_unallocated.append(fellow)
+            elif result[2] == 'staff':
+                staff = Staff(result[1])
+                staff.id = result[0]
+                self.staff_unallocated.append(staff)
 
+        offices = LoadState.load_offices(cursor)
+        for office in offices:
+            room_name = office[0]
+            allocations = office[1].split(",")
+
+
+        livings = LoadState.load_livings(cursor)
+        for living in livings:
+            print(living)
 
 """
-create_room office black
-create_room office blue
-create_room living bluedom
 add_person bryo kiseu fellow yes
 add_person peter marangi fellow yes
 add_person gift otieno staff
 add_person selsa patash staff
+create_room office black
+create_room office blue
+create_room living bluedom
+load_people people.txt
 save_state --db_name=dojos.db
+load_state dojos.db
 """
