@@ -4,7 +4,7 @@ interactive command application.
 
 Usage:
     interact create_room (office | living) <room_name>...
-    interact add_person <fname> <lname> (fellow [[yes|y][no|n]] | staff)
+    interact add_person <fname> <lname> (fellow| staff) [[yes|y][no|n]]
     interact print_room <room_name>...
     interact print_unallocated [--o=filename]
     interact print_allocations [--o=filename]
@@ -77,7 +77,7 @@ class MyInteractive(cmd.Cmd):
 
     @docopt_cmd
     def do_add_person(self, arg):
-        """Usage:  add_person <fname> <lname> (fellow [[yes|y][n|no]] | staff)"""
+        """Usage:  add_person <fname> <lname> (fellow | staff) [[yes|y][n|no]]"""
         if arg['yes'] | arg['y']:
             need_room = "yes"
         else:
@@ -102,21 +102,23 @@ class MyInteractive(cmd.Cmd):
         null = result[2]
 
         if offices:
-            print("Offices: ")
             for room in offices:
                 people_list = dojo.offices[room]
                 print("office ", room)
+                print('=' * 30)
                 for member in people_list:
-                    print(member.name, "\t")
-
+                    print(member.name, "\t", member.id)
+                print(" ")
+            print(" ")
         if livings:
-            print("Living Spaces: ")
             for room in livings:
                 living_people = dojo.livings[room]
                 print("Living space ", room)
+                print('=' * 30)
                 for member in living_people:
-                    print(member.name, "\t")
-
+                    print(member.name, "\t", member.id)
+                print(" ")
+            print(" ")
         if null:
             print("Non Existent Rooms: ")
             for room in null:
