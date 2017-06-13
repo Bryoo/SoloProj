@@ -1,4 +1,0 @@
-Unallocated Fellows
---------------------------------------------------
-All fellows are allocated to rooms
-Unallocated Staff----------------------------------------All Staff are allocated to rooms
