@@ -217,6 +217,31 @@ class TestRoomClass(unittest.TestCase):
         self.assertEqual(4, len(self.test_dojo.fellow_list) - fellow_len)
         self.assertEqual(3, len(self.test_dojo.staff_list) - staff_len)
 
+    def test_reallocation(self):
+        """test whether the reallocation function reallocates to new room"""
+        staff_created = Staff('martha jones')
+        staff_jen = Staff('jeniffer jenny')
+        fellow_akash = Fellow("akash baga")
+        fellow_adams = Fellow("adams mister")
+        self.test_dojo.offices.clear()
+        self.test_dojo.offices.update(
+            {
+                'black': [staff_created],
+                'blue': [staff_jen]
+            }
+        )
+        self.test_dojo.livings.update({
+            'bluedom': [fellow_adams, fellow_akash]
+        })
+        # tests whether staff moves to new room allocated
+        self.test_dojo.reallocation([], ['black'], [[self.is_office, 'blue', staff_jen]])
+        self.assertEqual({'black': [staff_created, staff_jen],
+                          'blue': []
+                          }, self.test_dojo.offices,
+                         msg="An allocated person needs to exist in the new allocated room"
+                         )
+
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -20,8 +20,8 @@ class Dojo(object):
         # check if its staff or fellow and create person by calling staff and fellow objects
 
         if is_office:
-            office_duplicates = [rm for rm in rooms if rm in list(self.offices.keys())]
-            non_duplicates = [rm for rm in rooms if rm not in list(self.offices.keys())]
+            office_duplicates = [room for room in rooms if room in list(self.offices.keys())]
+            non_duplicates = [room for room in rooms if room not in list(self.offices.keys())]
 
             if non_duplicates:  # if there are no office duplicates
 
@@ -41,8 +41,8 @@ class Dojo(object):
                 print("All entries exist hence no room created\n")
 
         else:
-            not_living_duplicates = [rm for rm in rooms if rm not in list(self.livings.keys())]
-            living_duplicates = [rm for rm in rooms if rm in list(self.livings.keys())]
+            not_living_duplicates = [room for room in rooms if room not in list(self.livings.keys())]
+            living_duplicates = [room for room in rooms if room in list(self.livings.keys())]
 
             if not_living_duplicates:  # if there are no duplicates
                 for room in not_living_duplicates:
@@ -132,9 +132,9 @@ class Dojo(object):
 
     def print_room(self, rooms):
         """ Prints out rooms and occupants"""
-        existing_offices = [rm for rm in rooms if rm in list(self.offices.keys())]
+        existing_offices = [room for room in rooms if room in list(self.offices.keys())]
 
-        existing_living = [rm for rm in rooms if rm in list(self.livings.keys())]
+        existing_living = [room for room in rooms if room in list(self.livings.keys())]
 
         # get non existent rooms
         null_rooms = []
@@ -223,14 +223,14 @@ class Dojo(object):
 
                 data.write(office)
                 data.write('=>')
-                data.write(', '.join(str(elem) for elem in self.offices[office]))
+                data.write(', '.join(str(elem.name) for elem in self.offices[office]))
                 data.write('\n')
 
             data.write("Living Spaces\n")
             for living in self.livings:
                 data.write(living)
                 data.write('=>')
-                data.write(', '.join(str(elem) for elem in self.livings[living]))
+                data.write(', '.join(str(elem.name) for elem in self.livings[living]))
                 data.write('\n')
             data.close()
 
