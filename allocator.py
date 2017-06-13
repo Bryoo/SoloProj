@@ -285,7 +285,7 @@ class Dojo(object):
                     for name in name_exists:
                         ids.append(name[2].id)
 
-                    if ids[0]==ids[1]:
+                    if ids[0] == ids[1]:
                         self.reallocation(living_exists, office_exists, name_exists)
                         return "successfully reallocated"
 
@@ -348,7 +348,11 @@ class Dojo(object):
             if isinstance(person_found, Staff):
                 print("Staff cannot be allocated to a living space")
                 return "Staff allocated to living space"
-            self.livings[living_name].append(person_found)
+            if len(self.livings[living_name]) >= 4:
+                print("the room is already packed. Choose another room")
+                return "the room is full"
+            else:
+                self.livings[living_name].append(person_found)
             print("Successfully reallocated", person_found.name, "to", living_name)
         elif office_exists:
             office_name = office_exists[0]
@@ -361,6 +365,7 @@ class Dojo(object):
         if not content:
             print("The file specified is empty")
             return "empty file"
+
         for line in content:
             data = line.split()
             fname = data[0]
@@ -381,7 +386,7 @@ class Dojo(object):
                 is_fellow = False
             else:
                 print("person", fname, lname, "not a staff or fellow")
-                return
+                return "person not a staff or fellow"
             self.create_person(fname, lname, is_fellow, need_room)
 
     def save_state(self, database):
