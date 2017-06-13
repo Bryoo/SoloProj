@@ -472,6 +472,7 @@ class Dojo(object):
 
 
 """
+# copy and paste these commands onto project terminal
 create_room office black
 create_room office blue
 create_room living blackdom
