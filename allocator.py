@@ -356,7 +356,7 @@ class Dojo(object):
             print("Successfully reallocated", person_found.name, "to", living_name)
         elif office_exists:
             office_name = office_exists[0]
-            if len(self.livings[office_name]) >= 6:
+            if len(self.offices[office_name]) >= 6:
                 print("the room is already packed. Choose another room")
                 return "the room is full"
             self.offices[office_name].append(person_found)

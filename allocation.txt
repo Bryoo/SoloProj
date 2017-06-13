@@ -1,8 +1,2 @@
 Offices
-black=>peter, mushagi, kiseu, bryan, testla, rose
-blue=>vandam, andrew, ritho
-white=>stella, shiku, hellen
-Living Spaces
-black_living=>bryant marangi, Meshack Nyambura, Lilian muli
-blue_living=>
-dark_living=>danielle stark
+black=>
