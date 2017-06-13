@@ -210,7 +210,7 @@ class Dojo(object):
                     print("Living Space", living)
                     print('=' * 30)
                     for person in living_people:
-                        print(person.name,'\t', person.id)
+                        print(person.name, '\t', person.id)
                     print(" ")
                 print(" ")
             else:
@@ -223,16 +223,17 @@ class Dojo(object):
 
                 data.write(office)
                 data.write('=>')
-                data.write(', '.join(str(elem.name) for elem in self.offices[office]))
+                data.write(', '.join(elem.name for elem in self.offices[office]))
                 data.write('\n')
 
             data.write("Living Spaces\n")
             for living in self.livings:
                 data.write(living)
                 data.write('=>')
-                data.write(', '.join(str(elem.name) for elem in self.livings[living]))
+                data.write(', '.join(elem.name for elem in self.livings[living]))
                 data.write('\n')
             data.close()
+            print("Printed allocations to", myfile)
 
     def reallocate_person(self, fname, lname, room_name):
         names = fname.lower() + " " + lname.lower()

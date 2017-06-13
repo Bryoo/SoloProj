@@ -231,7 +231,8 @@ class TestRoomClass(unittest.TestCase):
             }
         )
         self.test_dojo.livings.update({
-            'bluedom': [fellow_adams, fellow_akash]
+            'bluedom': [fellow_adams, fellow_akash],
+            'blackdom': []
         })
         # tests whether staff moves to new room allocated
         self.test_dojo.reallocation([], ['black'], [[self.is_office, 'blue', staff_jen]])
@@ -240,8 +241,7 @@ class TestRoomClass(unittest.TestCase):
                           }, self.test_dojo.offices,
                          msg="An allocated person needs to exist in the new allocated room"
                          )
-        # tests whether error arises when fellow moves to office
-        self.test_dojo.reallocation([], ['bluedom'], [[self.is_office, 'black', staff_jen]])
+
 
 if __name__ == '__main__':
     unittest.main()
