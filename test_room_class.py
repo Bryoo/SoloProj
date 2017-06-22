@@ -205,7 +205,7 @@ class TestRoomClass(unittest.TestCase):
                 'blue': [staff_jen]
             }
         )
-        self.test_dojo.livings.updatoe({
+        self.test_dojo.livings.update({
             'bluedom': [fellow_adams, fellow_akash],
             'blackdom': []
         })
