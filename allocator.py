@@ -279,6 +279,7 @@ class Dojo(object):
 
             elif len(name_exists) < 1:
                 print("Sorry, the person doesn't exist")
+                return "Sorry, the person doesn't exist"
 
             else:
                 if len(name_exists) == 2:

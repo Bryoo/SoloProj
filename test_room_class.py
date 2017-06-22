@@ -3,6 +3,7 @@ from room import Room, Office
 from people import Person, Fellow, Staff
 from allocator import Dojo
 import os
+import sqlite3
 
 
 class TestRoomClass(unittest.TestCase):
@@ -191,14 +192,23 @@ class TestRoomClass(unittest.TestCase):
     def test_print_allocations(self):
         filename = 'allocation.txt'
         """ test the output of the allocated offices"""
-        self.test_dojo.offices = {'black': ['peter', 'mushagi', 'kiseu', 'bryan', 'testla', 'rose'],
-                                  'blue': ['vandam', 'andrew', 'ritho'],
-                                  'white': ['stella', 'shiku', 'hellen']
-                                  }
-        self.test_dojo.livings = {'black_living': ['bryant marangi', 'Meshack Nyambura', 'Lilian muli'],
-                                  'blue_living': [],
-                                  'dark_living': ['danielle stark']
-                                 }
+        staff_created = Staff('martha jones')
+        staff_jen = Staff('jeniffer jenny')
+        fellow_akash = Fellow("akash baga")
+        fellow_adams = Fellow("adams mister")
+
+        self.test_dojo.offices.clear()
+        self.test_dojo.livingd.clear()
+        self.test_dojo.offices.update(
+            {
+                'black': [staff_created, fellow_adams],
+                'blue': [staff_jen]
+            }
+        )
+        self.test_dojo.livings.update({
+            'bluedom': [fellow_adams, fellow_akash],
+            'blackdom': []
+        })
         self.test_dojo.print_allocations(filename)
 
     def test_reallocate_person(self):
@@ -217,6 +227,9 @@ class TestRoomClass(unittest.TestCase):
         self.assertEqual(4, len(self.test_dojo.fellow_list) - fellow_len)
         self.assertEqual(3, len(self.test_dojo.staff_list) - staff_len)
 
+        # test whether you can create a person whose not a fellow or staff
+        self.assertEqual(self.test_dojo.load_people('test_load.txt'), 'person not a staff or fellow')
+
     def test_reallocation(self):
         """test whether the reallocation function reallocates to new room"""
         staff_created = Staff('martha jones')
@@ -226,7 +239,7 @@ class TestRoomClass(unittest.TestCase):
         self.test_dojo.offices.clear()
         self.test_dojo.offices.update(
             {
-                'black': [staff_created],
+                'black': [staff_created, fellow_adams],
                 'blue': [staff_jen]
             }
         )
@@ -235,13 +248,87 @@ class TestRoomClass(unittest.TestCase):
             'blackdom': []
         })
         # tests whether staff moves to new room allocated
-        self.test_dojo.reallocation([], ['black'], [[self.is_office, 'blue', staff_jen]])
-        self.assertEqual({'black': [staff_created, staff_jen],
+        self.test_dojo.reallocate_person("jeniffer", "jenny", "black")
+
+        self.assertEqual({'black': [staff_created, fellow_adams, staff_jen],
                           'blue': []
                           }, self.test_dojo.offices,
                          msg="An allocated person needs to exist in the new allocated room"
                          )
 
+        # test reallocation of non existent person
+        self.assertEqual(self.test_dojo.reallocate_person("non", "existent", "blue"), "Sorry, the person doesn't exist",
+                         msg="system should crash if person doesn't exist")
+
+        # test reallocation of someone whose got both a living and office space
+        self.test_dojo.reallocate_person("adams", "mister", "blue")
+        self.assertEqual({'black': [staff_created, staff_jen],
+                          'blue': [fellow_adams]
+                          }, self.test_dojo.offices,
+                         msg="failed allocating person with both living space and office"
+                         )
+
+
+class TestDatabaseClass(unittest.TestCase):
+    def setUp(self):
+        self.test_dojo = Dojo()
+        self.staff_created = Staff('martha jones')
+        self.staff_jen = Staff('jeniffer jenny')
+        self.staff_kiseu = Staff('bryan kiseu')
+        self.fellow_akash = Fellow("akash baga")
+        self.fellow_adams = Fellow("adams mister")
+
+        # add created persons to offices
+        self.test_dojo.offices.update(
+            {
+                'black': [self.staff_created, self.staff_kiseu],
+                'blue': [self.staff_jen]
+            }
+        )
+        # add created persons to living spaces
+        self.test_dojo.livings.update({
+            'bluedom': [self.fellow_adams],
+            'blackdom': [self.fellow_akash]
+        })
+
+    def test_save_state(self):
+        """tests whether people are loaded into the database """
+        database = "test_db.db"
+        conn = sqlite3.connect(database)
+        cursor = conn.cursor()
+
+        # query database for added persons
+        self.test_dojo.save_state(database)
+        cursor.execute("SELECT * FROM people WHERE office_id= ?", ('blue',))
+        query = cursor.fetchall()
+
+        # assert whether persons are actually in the database
+        for person in query:
+            identity = person[0]
+            names = person[1]
+            self.assertEqual(identity, self.staff_jen.id, msg="id in the database id doesn't match users")
+            self.assertEqual(names, self.staff_jen.name, msg="id in the database id doesn't match users")
+
+        os.remove(database)
+
+    def test_load_state(self):
+        # clear objects of any data in set up
+        initial_office_dict = self.test_dojo.offices.copy()
+        initial_living_dict = self.test_dojo.livings.copy()
+
+        """"tests whether people are loaded from the database to the objects"""
+        database = "test_load.db"
+        conn = sqlite3.connect(database)
+        cursor = conn.cursor()
+
+        # run load function
+        self.test_dojo.load_state(database)
+
+        # check whether loaded items exist in office and living space dicts
+        for office in self.test_dojo.offices:
+            members = [member.name for member in self.test_dojo.offices[office]]
+            init_members = [member.name for member in initial_office_dict[office]]
+            self.assertTrue(set(members) == set(init_members), msg="a member doesn't match the ones before loading")
 
 if __name__ == '__main__':
     unittest.main()

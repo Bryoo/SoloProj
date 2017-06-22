@@ -24,7 +24,10 @@ class SaveState(object):
     def insert_people_livings(self, c, conn, identity, names, living, role):
         c.execute("SELECT office_id FROM people WHERE id= ?", (identity,))
         office = c.fetchone()
-        office = office[0]
+        if office:
+            office = office[0]
+        else:
+            print("person has no office")
         c.execute("INSERT OR REPLACE INTO people (id, names, office_id, living_id, role) VALUES(?,?,?,?,?)",
                   (identity, names, office, living, role))
         conn.commit()
