@@ -1,2 +1,6 @@
 Offices
-black=>
+black=>martha jones, adams mister
+blue=>jeniffer jenny
+Living Spaces
+bluedom=>adams mister, akash baga
+blackdom=>

@@ -198,14 +198,14 @@ class TestRoomClass(unittest.TestCase):
         fellow_adams = Fellow("adams mister")
 
         self.test_dojo.offices.clear()
-        self.test_dojo.livingd.clear()
+        self.test_dojo.livings.clear()
         self.test_dojo.offices.update(
             {
                 'black': [staff_created, fellow_adams],
                 'blue': [staff_jen]
             }
         )
-        self.test_dojo.livings.update({
+        self.test_dojo.livings.updatoe({
             'bluedom': [fellow_adams, fellow_akash],
             'blackdom': []
         })
