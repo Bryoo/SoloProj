@@ -5,6 +5,9 @@ import sqlite3
 from sqlite_db import SaveState, LoadState
 SaveState = SaveState()
 LoadState = LoadState()
+import os
+
+
 class Dojo(object):
     def __init__(self):
         # self.room_name = []
@@ -155,7 +158,7 @@ class Dojo(object):
                 for fellow in self.fellow_unallocated:
                     print(fellow.name)
             else:
-                print("All fellows are allocated to rooms")
+                print("No unallocated fellows exist")
 
             print("\nUnallocated Staff")
             print('-' * 40)
@@ -163,7 +166,7 @@ class Dojo(object):
                 for staff in self.staff_unallocated:
                     print(staff.name)
             else:
-                print("All Staff are allocated to rooms")
+                print("No unallocated staff exist")
 
         else:
             data = open(filename, "w")
@@ -176,7 +179,7 @@ class Dojo(object):
                     data.write("\t\t")
                 data.write("\n")
             else:
-                data.write("All fellows are allocated to rooms\n")
+                data.write("No unallocated fellows exist\n")
 
             data.write("Unallocated Staff")
             data.write('-' * 40)
@@ -184,7 +187,7 @@ class Dojo(object):
                 for room in self.staff_unallocated:
                     data.write(room.name)
             else:
-                data.write("All Staff are allocated to rooms\n")
+                data.write("No unallocated staff exist\n")
 
             data.close()
 
@@ -235,7 +238,7 @@ class Dojo(object):
             data.close()
             print("Printed allocations to", myfile)
 
-    def reallocate_person(self, fname, lname, room_name):
+    def reallocate_person(self, fname, lname, room_name, identity=None):
         names = fname.lower() + " " + lname.lower()
         room = room_name.lower()
         name_exists = []
@@ -252,42 +255,91 @@ class Dojo(object):
             print("No room named", room_name, "was found")
             return
 
-        elif len(office_exists + living_exists) == 1:
+        elif len(office_exists + living_exists) >= 1:
             # a room found
             is_office = True
-            if office_exists:
-                # if inputted room is an office, search for person in offices
-                for office, persons in self.offices.items():
-                    # finds person inputted if in office dict
-                    for person in persons:
-                        if person.name == names:
-                            # appends all similar names in office dict to name_exists list
+            # checking the rooms and validating
+            if len(office_exists + living_exists) > 1:
+                print("Please specify which of these rooms you'd like to allocate to")
+                result = self.print_room([room_name])
+                offices = result[0]
+                livings = result[1]
+                null = result[2]
+
+                if offices:
+                    for room in offices:
+                        people_list = self.offices[room]
+                        print("office ", room)
+                        print('=' * 30)
+                        for member in people_list:
+                            print(member.name, "\t", member.id)
+                        print(" ")
+                if livings:
+                    for room in livings:
+                        living_people = self.livings[room]
+                        print("Living space ", room)
+                        print('=' * 30)
+                        for member in living_people:
+                            print(member.name, "\t", member.id)
+                        print(" ")
+                final_room = input("Enter 'office' or 'living space' to select room type: ")
+                if final_room == 'living space':
+                    if office_exists:
+                        # if inputted room is an office, search for person in offices
+                        for office, persons in self.offices.items():
+                            # finds person inputted if in office dict
+                            for person in persons:
+                                if person.name == names:
+                                    # appends all similar names in office dict to name_exists list
+                                    name_exists.append([is_office, office, person])
+                else:
+                    if living_exists:
+                        # if inputted room is a living space, search for person in living spaces
+                        for living, people in self.livings.items():
+                            #  finds person inputted if in living space dict
+                            for person in people:
+                                if person.name == names:
+                                    # appends a list of similar names in living space dict to name_exists list
+                                    name_exists.append([not is_office, living, person])
+
+            else:
+                if office_exists:
+                    # if inputted room is an office, search for person in offices
+                    for office, persons in self.offices.items():
+                        # finds person inputted if in office dict
+                        for person in persons:
+                            if person.name == names:
+                                # appends all similar names in office dict to name_exists list
                                 name_exists.append([is_office, office, person])
 
-            if living_exists:
-                # if inputted room is a living space, search for person in living spaces
-                for living, people in self.livings.items():
-                    #  finds person inputted if in living space dict
-                    for person in people:
-                        if person.name == names:
-                            # appends a list of similar names in living space dict to name_exists list
-                            name_exists.append([not is_office, living, person])
+                if living_exists:
+                    # if inputted room is a living space, search for person in living spaces
+                    for living, people in self.livings.items():
+                        #  finds person inputted if in living space dict
+                        for person in people:
+                            if person.name == names:
+                                # appends a list of similar names in living space dict to name_exists list
+                                name_exists.append([not is_office, living, person])
 
+            # checking the names and validating
             if len(name_exists) == 1:
                 # only a single person by inputted name
                 self.reallocation(living_exists, office_exists, name_exists)
 
             elif len(name_exists) < 1:
+                # no name found
                 print("Sorry, the person doesn't exist")
                 return "Sorry, the person doesn't exist"
 
             else:
                 if len(name_exists) == 2:
+                    # two similar names found
                     ids = []
                     for name in name_exists:
                         ids.append(name[2].id)
 
                     if ids[0] == ids[1]:
+                        # same person
                         self.reallocation(living_exists, office_exists, name_exists)
                         return "successfully reallocated"
 
@@ -295,7 +347,9 @@ class Dojo(object):
                 for name in name_exists:
                     print(name[2].name, '\t', name[2].id)
 
-                identity = int(input('Enter id: '))
+                if identity is None:
+                    identity = int(input('Enter id: '))
+
                 final_identity = []
                 for name in name_exists:
                     if name[2].id == identity:
@@ -306,43 +360,11 @@ class Dojo(object):
                 else:
                     print("Sorry, that identity doesn't exist")
 
-        elif len(office_exists + living_exists) > 1:
-            print("Please specify which of these rooms you'd like to allocate to")
-            result = self.print_room([room_name])
-            offices = result[0]
-            livings = result[1]
-            null = result[2]
-
-            if offices:
-                for room in offices:
-                    people_list = self.offices[room]
-                    print("office ", room)
-                    print('=' * 30)
-                    for member in people_list:
-                        print(member.name, "\t", member.id)
-                    print(" ")
-                print(" ")
-            if livings:
-                for room in livings:
-                    living_people = self.livings[room]
-                    print("Living space ", room)
-                    print('=' * 30)
-                    for member in living_people:
-                        print(member.name, "\t", member.id)
-                    print(" ")
-                print(" ")
-
     def reallocation(self, living_exists, office_exists, name_exists):
         details = name_exists[0]
         is_office = details[0]
         current_room = details[1]
         person_found = details[2]
-
-        # remove person from current room
-        if is_office:
-            self.offices[current_room].remove(person_found)
-        else:
-            self.livings[current_room].remove(person_found)
 
         # add person to allocated room
         if living_exists:
@@ -364,7 +386,17 @@ class Dojo(object):
             self.offices[office_name].append(person_found)
             print("Successfully reallocated", person_found.name, "to", office_name)
 
+        # remove person from current room
+        if is_office:
+            self.offices[current_room].remove(person_found)
+        else:
+            self.livings[current_room].remove(person_found)
+
     def load_people(self, filename='people.txt'):
+        if not os.path.isfile(filename):
+            print("File doesn't exist")
+            return "file doesn't exist"
+
         with open(filename, 'r') as f:
             content = f.readlines()
         if not content:
@@ -428,6 +460,10 @@ class Dojo(object):
 
     def load_state(self, database='dojo.db'):
         """ loads data from database"""
+        if not os.path.exists(database):
+            print("database doesn't exist")
+            return "database doesn't exist"
+
         conn = sqlite3.connect(database)
         cursor = conn.cursor()
         results = LoadState.load_unallocated(cursor)
@@ -479,18 +515,16 @@ class Dojo(object):
                     self.livings[room_name].append(fellow_obj)
                 elif role == 'staff':
                     print("error")
-
+        print("loaded state successfully")
 
 """
 # copy and paste these commands onto project terminal
 create_room office black
-create_room office blue
-create_room living blackdom
-create_room living bluedom
+create_room living red
 add_person bryo kiseu fellow yes
-add_person gift otieno fellow yes
-add_person gift otieno staff yes
-add_person selsa patash staff y
+add_person gift otieno fellow no
+add_person edmond ato staff yes
+add_person selsa patash staff
 load_people people.txt
 save_state --db_name=dojos.db
 print_allocations

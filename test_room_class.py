@@ -217,19 +217,14 @@ class TestRoomClass(unittest.TestCase):
         inital_len = len(self.test_dojo.offices['bluedom'])
         # allocate martha to newly created office
         self.test_dojo.reallocate_person("Martha", "Nyambura", "Bluedom")
-        self.assertEqual(1, len(self.test_dojo.offices['bluedom']) - inital_len)
+        self.assertEqual(1, len(self.test_dojo.offices['bluedom']) - inital_len,
+                         msg="office length needs to increase by one after reallocation")
 
-    def test_load_people(self):
-        """ test whether load people adds to rooms"""
-        fellow_len = len(self.test_dojo.fellow_list)
-        staff_len = len(self.test_dojo.staff_list)
-        self.test_dojo.load_people('people.txt')
-        self.assertEqual(4, len(self.test_dojo.fellow_list) - fellow_len)
-        self.assertEqual(3, len(self.test_dojo.staff_list) - staff_len)
-
-        # test whether you can create a person whose not a fellow or staff
-        self.assertEqual(self.test_dojo.load_people('test_load.txt'), 'person not a staff or fellow')
-
+    # #
+    # def test_reallocate_person_multiple_names(self):
+    #     self.test_dojo.create_person("Martha", "Nyambura", self.is_fellow)
+    #     self.test_dojo.reallocate_person("Martha", "Nyambura", "Spires")
+    # @patch('yourmodule.get_input', return_value='yes')
     def test_reallocation(self):
         """test whether the reallocation function reallocates to new room"""
         staff_created = Staff('martha jones')
@@ -267,6 +262,32 @@ class TestRoomClass(unittest.TestCase):
                           }, self.test_dojo.offices,
                          msg="failed allocating person with both living space and office"
                          )
+
+        # test reallocation of people with same name
+        adams_again = Fellow('adams mister')
+        self.test_dojo.offices['black'].append(adams_again)
+        self.test_dojo.reallocate_person("adams", "mister", "blue", adams_again.id)
+
+        self.assertEqual({'black': [staff_created, staff_jen],
+                          'blue': [fellow_adams, adams_again]
+                          }, self.test_dojo.offices,
+                         msg="failed allocating person when multiple names exist"
+                         )
+
+        # test reallocation when multiple room names exist
+        self.test_dojo.livings.update({'blue': []})  # add living space named blue
+        # self.test_dojo.reallocate_person(self.test_dojo.reallocate_person("adams", "mister", "blue", fellow_adams.id))
+
+    def test_load_people(self):
+        """ test whether load people adds to rooms"""
+        fellow_len = len(self.test_dojo.fellow_list)
+        staff_len = len(self.test_dojo.staff_list)
+        self.test_dojo.load_people('people.txt')
+        self.assertEqual(4, len(self.test_dojo.fellow_list) - fellow_len)
+        self.assertEqual(3, len(self.test_dojo.staff_list) - staff_len)
+
+        # test whether you can create a person whose not a fellow or staff
+        self.assertEqual(self.test_dojo.load_people('test_load.txt'), 'person not a staff or fellow')
 
 
 class TestDatabaseClass(unittest.TestCase):
