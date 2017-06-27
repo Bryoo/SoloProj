@@ -2,10 +2,10 @@ from people import Fellow, Staff
 from room import Office, LivingSpace
 import random
 import sqlite3
+import os
 from sqlite_db import SaveState, LoadState
 SaveState = SaveState()
 LoadState = LoadState()
-import os
 
 
 class Dojo(object):
@@ -253,19 +253,23 @@ class Dojo(object):
 
         if len(office_exists + living_exists) < 1:
             print("No room named", room_name, "was found")
-            return
+            return "Room not found"
 
         elif len(office_exists + living_exists) >= 1:
             # a room found
             is_office = True
             # checking the rooms and validating
             if len(office_exists + living_exists) > 1:
+                # if room name inputted has more than one name
                 print("Please specify which of these rooms you'd like to allocate to")
                 result = self.print_room([room_name])
                 offices = result[0]
                 livings = result[1]
                 null = result[2]
-
+                if null:
+                    print("Non Existent Rooms: ")
+                    for room in null:
+                        print("Room", room, "doesn't exist")
                 if offices:
                     for room in offices:
                         people_list = self.offices[room]
@@ -284,25 +288,25 @@ class Dojo(object):
                         print(" ")
                 final_room = input("Enter 'office' or 'living space' to select room type: ")
                 if final_room == 'living space':
-                    if office_exists:
-                        # if inputted room is an office, search for person in offices
-                        for office, persons in self.offices.items():
-                            # finds person inputted if in office dict
-                            for person in persons:
-                                if person.name == names:
-                                    # appends all similar names in office dict to name_exists list
-                                    name_exists.append([is_office, office, person])
+                    # search for person in living spaces
+                    for living, people in self.livings.items():
+                        #  finds person inputted if in living space dict
+                        for person in people:
+                            if person.name == names:
+                                # appends a list of similar names in living space dict to name_exists list
+                                name_exists.append([not is_office, living, person])
+
                 else:
-                    if living_exists:
-                        # if inputted room is a living space, search for person in living spaces
-                        for living, people in self.livings.items():
-                            #  finds person inputted if in living space dict
-                            for person in people:
-                                if person.name == names:
-                                    # appends a list of similar names in living space dict to name_exists list
-                                    name_exists.append([not is_office, living, person])
+                    # search for person in offices
+                    for office, persons in self.offices.items():
+                        # finds person inputted if in office dict
+                        for person in persons:
+                            if person.name == names:
+                                # appends all similar names in office dict to name_exists list
+                                name_exists.append([is_office, office, person])
 
             else:
+                # only one room found by inputted name in both office and living spaces present
                 if office_exists:
                     # if inputted room is an office, search for person in offices
                     for office, persons in self.offices.items():

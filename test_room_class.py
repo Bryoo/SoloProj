@@ -77,17 +77,17 @@ class TestRoomClass(unittest.TestCase):
                          )
         # test whether the rooms created exist in dictionary
 
-        self.assertTrue(bool(set(initial_dojo.livings.keys())&set(self.test_dojo.livings.keys())),
+        self.assertTrue(bool(set(initial_dojo.livings.keys()) & set(self.test_dojo.livings.keys())),
                         msg="'living_Blue', 'living_DayKio', 'living_Plaza' created should be in room dict" )
 
     def test_create_person(self):
         """ test creation of person and increment of person number"""
 
-        fellow_num = len(self.test_dojo.fellow_list) # before person creation
+        fellow_num = len(self.test_dojo.fellow_list)  # before person creation
         self.test_dojo.create_person("bryant", "kiseu", self.is_fellow)
         self.assertEqual(1, len(self.test_dojo.fellow_list) - fellow_num)
 
-        staff_num = len(self.test_dojo.staff_list) # before person creation
+        staff_num = len(self.test_dojo.staff_list)  # before person creation
         self.test_dojo.create_person("peter", "marangi", not self.is_fellow)
         self.assertEqual(1, len(self.test_dojo.staff_list) - staff_num)
 
