@@ -6,11 +6,14 @@ class Person(object):
 class Fellow(Person):
     def __init__(self, name):
         self.name = name
+        self.id = id(self)
 
-    pass
 
 class Staff(Person):
     def __init__(self, name):
         self.name = name
-    pass
+        self.id = id(self)
+
+
+
 

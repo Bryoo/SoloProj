@@ -4,10 +4,13 @@ interactive command application.
 
 Usage:
     interact create_room (office | living) <room_name>...
-    interact add_person <fname> <lname> (fellow [[yes|y][y|n]] | staff)
-    interact print_room (office | living) <room_name>...
+    interact add_person <fname> <lname> (fellow| staff) [[yes|y][no|n]]
+    interact print_room <room_name>...
     interact print_unallocated [--o=filename]
     interact print_allocations [--o=filename]
+    interact reallocate_person <fname> <lname> <room_name>
+    interact load_people <filename>
+    interact load_state <db_name>
     interact (-i | --interactive)
     interact (-h | --help | --version)
 
@@ -74,7 +77,7 @@ class MyInteractive(cmd.Cmd):
 
     @docopt_cmd
     def do_add_person(self, arg):
-        """Usage:  add_person <fname> <lname> (fellow [[yes|y][n|no]] | staff)"""
+        """Usage:  add_person <fname> <lname> (fellow | staff) [[yes|y][n|no]]"""
         if arg['yes'] | arg['y']:
             need_room = "yes"
         else:
@@ -89,26 +92,35 @@ class MyInteractive(cmd.Cmd):
 
     @docopt_cmd
     def do_print_room(self, arg):
-        """Usage: print_room (office | living) <room_name>... """
+        """Usage: print_room <room_name>... """
 
         rooms = arg['<room_name>']
-        if arg['office']:
-            is_office = True
-        else:
-            is_office = False
+        result = dojo.print_room(rooms)
 
-        result = dojo.print_room(is_office, rooms)
-        null = result[0]
-        existing = result[1]
+        offices = result[0]
+        livings = result[1]
+        null = result[2]
 
-        if result[2]:
-            for room in existing:
-                print(room, ":=>", dojo.offices[room])
-        else:
-            for room in existing:
-                print(room, ":=>", dojo.livings[room])
-
+        if offices:
+            for room in offices:
+                people_list = dojo.offices[room]
+                print("office ", room)
+                print('=' * 30)
+                for member in people_list:
+                    print(member.name, "\t", member.id)
+                print(" ")
+            print(" ")
+        if livings:
+            for room in livings:
+                living_people = dojo.livings[room]
+                print("Living space ", room)
+                print('=' * 30)
+                for member in living_people:
+                    print(member.name, "\t", member.id)
+                print(" ")
+            print(" ")
         if null:
+            print("Non Existent Rooms: ")
             for room in null:
                 print("Room", room, "doesn't exist")
 
@@ -124,12 +136,33 @@ class MyInteractive(cmd.Cmd):
         filename = arg['--o']
         dojo.print_allocations(filename)
 
+    @docopt_cmd
+    def do_reallocate_person(self, arg):
+        """Usage: reallocate_person <fname> <lname> <room_name>"""
+
+        dojo.reallocate_person(arg['<fname>'], arg['<lname>'], arg['<room_name>'])
+
+    @docopt_cmd
+    def do_save_state(self, arg):
+        """Usage: save_state [--db_name=dojo.db]"""
+        dojo.save_state(arg['--db_name'])
+
+
+    @docopt_cmd
+    def do_load_people(self, arg):
+        """Usage: load_people <filename>"""
+        dojo.load_people(arg['<filename>'])
+
+    @docopt_cmd
+    def do_load_state(self, arg):
+        """Usage: load_state <db_name>"""
+        dojo.load_state(arg['<db_name>'])
+
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
 
         print('Good Bye!')
         exit()
-
 
 opt = docopt(__doc__, sys.argv[1:])
 
